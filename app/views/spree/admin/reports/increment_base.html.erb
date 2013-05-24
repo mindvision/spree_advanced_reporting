@@ -5,7 +5,7 @@
     </div>
 <% end -%>
 
-<% content_for :table_filter do %>
+<% content_for :page_actions do %>
     <div class="report_details">
         <h1><%=t "adv_report." + @report.name.downcase.gsub(/ /,"_") %></h1>
         <div class="links">
@@ -32,7 +32,7 @@
 <% content_for :head do -%>
     <script type="text/javascript" src="http://www.google.com/jsapi"></script>
     <script type="text/javascript">
-        google.load('visualization', '1', {'packages': ['corechart']});	
+        google.load('visualization', '1', {'packages': ['corechart']});    
     </script>
     <script type="text/javascript">
         google.setOnLoadCallback(drawChart);
