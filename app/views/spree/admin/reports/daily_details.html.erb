@@ -1,0 +1,73 @@
+<% sorted_variants = @report.data.keys.sort{|a,b| a.sku <=> b.sku} %>
+<% total_unit_revenue = 0; total_shipping_charges = 0; total_units = 0; total_adjustments = 0 %>
+
+<h2>Item Shipments for <%= @report.date %></h2>
+
+<p>
+This report includes items that were in shipments created on this date.
+</p>
+
+<%= form_tag daily_details_admin_reports_path, method: 'GET' do %>
+  <input class='datepicker' name='date' value='<%= @report.date %>'>
+  <%= submit_tag "Show Shipments" %>
+<% end %>
+
+
+<table>
+  <tr>
+    <th>Item</th>
+    <th>Quantity Shipped</th>
+    <th>Unit Revenue</th>
+  </tr>
+
+  <% sorted_variants.each do |v| %>
+    <tr>
+      <td><%= v.product.name %> (<%= v.sku %>)</td>
+      <td><%= @report.data[v][:count] %></td>
+      <td><%= number_to_currency @report.data[v][:price] %></td>
+      <% total_unit_revenue += @report.data[v][:price] %>
+      <% total_units += @report.data[v][:count] %>
+    </tr>
+  <% end %>
+  <tr>
+    <td>Item Total</td>
+    <td><%= total_units %></td>
+    <td><%= number_to_currency total_unit_revenue %></td>
+  </tr>
+  <tr>
+    <td>Shipping Total</td>
+    <td><%= @report.shipments.count %></td>
+    <td><%= number_to_currency @report.shipments.collect(&:cost).reduce(:+) %></td>
+  </tr>
+  <tr>
+    <td>Adjustments Total</td>
+    <td><%= @report.adjustments.count %></td>
+    <td><%= number_to_currency @report.adjustments.collect(&:amount).reduce(:+) %></td>
+  </tr>
+  <tr>
+    <td>Grand Total</td>
+    <td></td>
+    <td><%= number_to_currency total_unit_revenue + @report.shipments.collect(&:cost).reduce(:+) + @report.adjustments.collect(&:amount).reduce(:+) %></td>
+  </tr>
+</table>
+
+<div id='shipments'>
+  <h2><%= @report.shipments.count %> Shipments</h2>
+
+  <table>
+    <tr>
+      <th>ID</th>
+      <th>Items</th>
+      <th>Shipping Charge</th>
+    </tr>
+
+    <% @report.shipments.sort{|a,b| a.created_at <=> b.created_at}.each do |shipment| %>
+      <tr>
+        <td><%= link_to shipment.number, admin_order_shipments_path(shipment.order) %></td>
+        <td><%= shipment.line_items.count %></td>
+        <td><%= number_to_currency shipment.cost %></td>
+      </tr>
+    <% end %>
+  </table>
+
+</div>

@@ -39,6 +39,7 @@ class Spree::AdvancedReport::IncrementReport < Spree::AdvancedReport
     INCREMENTS.each do |inc|
       data[inc].each { |k,v| ruportdata[inc] << { "key" => k, "display" => v[:display], "value" => v[:value] } }
       ruportdata[inc].data.each do |p|
+        puts "*** #{inc}"
         self.all_data << { "increment" => inc.to_s.capitalize, "key" => p.data["key"], "display" => p.data["display"], "value" => p.data["value"] }
       end
       ruportdata[inc].sort_rows_by!(["key"])
