@@ -27,4 +27,8 @@ table {
   tr:nth-child(odd) {
     background-color: #eff5fc;
   }
+
+  tr.total {
+    font-weight: bold;
+  }
 }

@@ -36,22 +36,22 @@ This report includes items that were in shipments created on this date.
   <% end %>
   <% total_shipping_charges = @report.shipments.collect(&:cost).reduce(:+).to_f %>
   <% total_adjustments = @report.adjustments.collect(&:amount).reduce(:+).to_f %>
-  <tr>
+  <tr class='total'>
     <td>Item Total</td>
     <td><%= total_units %></td>
     <td><%= number_to_currency total_unit_revenue %></td>
   </tr>
-  <tr>
+  <tr class='total'>
     <td>Shipping Total</td>
     <td><%= @report.shipments.count %></td>
     <td><%= number_to_currency total_shipping_charges %></td>
   </tr>
-  <tr>
+  <tr class='total'>
     <td>Adjustments Total</td>
     <td><%= @report.adjustments.count %></td>
     <td><%= number_to_currency total_adjustments %></td>
   </tr>
-  <tr>
+  <tr class='total'>
     <td>Grand Total</td>
     <td></td>
     <td><%= number_to_currency total_unit_revenue + @report.shipments.collect(&:cost).reduce(:+).to_f + @report.adjustments.collect(&:amount).reduce(:+).to_f %></td>
