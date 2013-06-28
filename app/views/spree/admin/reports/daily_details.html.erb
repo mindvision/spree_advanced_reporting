@@ -1,5 +1,5 @@
 <% content_for :head do -%>
-  <%= stylesheet_link_tag 'admin/daily_details' %>
+  <%#= stylesheet_link_tag 'admin/daily_details' %>
 <% end %>
 
 <% line_items = @report.data.keys.sort{|a,b| a.sku <=> b.sku} %>
