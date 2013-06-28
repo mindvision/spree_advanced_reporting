@@ -5,30 +5,28 @@ h2 {
 #date_form {
   float: right;
   border: 1px solid #cee1f4;
-
-  form {
+}
+#date_form  form {
     margin: 20px;
-
-    input {
+}
+#date_form form input {
       margin: 0 10px;
     }
-  }
-}
 
 table {
   margin: 30px 0;
+}
 
-  th {
+table th {
     font-weight: bold;
     border-top: 1px solid #cee1f4;
     background-color: #eff5fc;
-  }
+}
 
-  tr:nth-child(odd) {
+table tr:nth-child(odd) {
     background-color: #eff5fc;
-  }
+}
 
-  tr.total {
+table  tr.total {
     font-weight: bold;
-  }
 }
