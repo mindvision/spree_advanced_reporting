@@ -10,3 +10,5 @@ en:
     geo_revenue: "Geo Revenue"
     geo_units: "Geo Units"
     geo_profit: "Geo Profit"
+    sales_total: 'Sales Total'
+    daily_details: 'Daily Sales Detail'
