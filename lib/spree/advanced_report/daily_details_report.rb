@@ -16,7 +16,7 @@ class Spree::AdvancedReport::DailyDetailsReport < Spree::AdvancedReport::Increme
   def initialize(params)
     super(params)
 
-    results = products_for_date(date)
+    results = details_for_date(date)
     date = params[:date] ? Date.parse(params[:date]) : Date.today
 
     self.date = date
@@ -28,31 +28,12 @@ class Spree::AdvancedReport::DailyDetailsReport < Spree::AdvancedReport::Increme
 
   end
 
-  def products_for_date2(date)
+  def details_for_date(date)
     date = params[:date] ? Date.parse(params[:date]) : Date.today
-    date_hash = {created_at: date.beginning_of_day..date.end_of_day}
+    conditions = {updated_at: date.beginning_of_day..date.end_of_day, state: 'completed'}
 
-    units = Spree::InventoryUnit.joins(:order, :shipment).where("shipment_id is not null").where(date_hash).where('spree_orders' => {state: 'complete'})
-
-    products = {}
-    units.each do |u|
-      products[u.variant] ||= {price: 0, count: 0}
-      products[u.variant][:price] += u.variant.price
-      products[u.variant][:count] += 1
-    end
-
-    shipments = units.collect{|u| u.shipment}.uniq
-    adjustments = Spree::Adjustment.where(date_hash).where("spree_adjustments.source_type != 'Spree::Shipment' OR spree_adjustments.source_type IS NULL")
-
-    [products, shipments, adjustments]
-  end
-
-  def products_for_date(date)
-    date = params[:date] ? Date.parse(params[:date]) : Date.today
-    conditions = {created_at: date.beginning_of_day..date.end_of_day, state: 'completed'}
-
-    payments = Spree::Payment.joins(:order).where(conditions).where('spree_orders.completed_at is not null').includes(order: [:shipments, :adjustments])
-    orders = payments.collect{|p| p.order}.uniq
+    payments = Spree::Payment.joins(:order).where(conditions).where('spree_orders.completed_at is not null').includes(source: [], order: [:shipments, :adjustments])
+    orders = payments.collect(&:order).uniq
     shipments = orders.collect(&:shipments).flatten
     adjustments = orders.collect(&:adjustments).flatten.select{|a| a.source_type != 'Spree::Shipment'}
 

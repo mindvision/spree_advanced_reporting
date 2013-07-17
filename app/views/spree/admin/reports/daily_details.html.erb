@@ -1,5 +1,8 @@
 <% content_for :head do -%>
-  <%#= stylesheet_link_tag 'admin/daily_details' %>
+  <%= javascript_include_tag 'admin/daily_details' %>
+  <%= stylesheet_link_tag 'admin/daily_details', media: 'all' %>
+  <%= stylesheet_link_tag 'admin/daily_details_print', media: 'print' %>
+
 <% end %>
 
 <% line_items = @report.data.keys.sort{|a,b| a.sku <=> b.sku} %>
@@ -8,14 +11,14 @@
 <div id='date_form'>
   <%= form_tag daily_details_admin_reports_path, method: 'GET' do %>
     Date: <input class='datepicker' name='date' value='<%= @report.date %>'>
-    <%= submit_tag "Show Shipments" %>
+    <%= submit_tag "Show Payments" %>
   <% end %>
 </div>
 
-<h2>Item Shipments for <%= @report.date %></h2>
+<h2>Payment Details for <%= @report.date %></h2>
 
 <p>
-This report includes items that were in shipments created on this date.
+  This report contains completed orders with credit card payments that were captured on this date.
 </p>
 
 <table>
@@ -60,9 +63,35 @@ This report includes items that were in shipments created on this date.
 
 <div id='payments'>
   <h2><%= @report.payments.count %> Payments</h2>
+  <a href='#' data-details='payment_details'>Show details...</a>
 
   <% if @report.payments.present? %>
     <table>
+      <tr>
+        <th>Card Type</th>
+        <th>Quantity</th>
+        <th>Amount</th>
+      </tr>
+      <% payments_count = payments_total = 0 %>
+      <% payments_by_card_type(@report.payments).each do |cc_type, payments| -%>
+        <% payments_count += payments.count %>
+        <% amount = payments.reduce(0){|m,p| m += p.amount; m} %>
+        <% payments_total += amount %>
+        <tr>
+          <td><%= cc_type.humanize %></td>
+          <td><%= payments.count %></td>
+          <td><%= number_to_currency(amount) %></td>
+        </tr>
+      <% end -%>
+      </tr>
+      <tr>
+        <td>Totals:</td>
+        <td><%= payments_count %></td>
+        <td><%= number_to_currency(payments_total) %></td>
+      </tr>
+    </table>
+
+    <table class='details' id='payment_details'>
       <tr>
         <th>Order</th>
         <th>Payment</th>
@@ -72,18 +101,26 @@ This report includes items that were in shipments created on this date.
       <% @report.payments.sort{|a,b| a.order.number <=> b.order.number}.each do |payment| %>
         <tr>
           <td><%= link_to payment.order.number, admin_order_path(payment.order) %></td>
-          <td><%= link_to "Payment ##{payment.id}", admin_order_payments_path(payment.order) %></td>
+          <td>
+            <% if payment.source.is_a?(Spree::CreditCard) %>
+              <%= link_to "#{payment.source.cc_type.humanize} #{payment.source.last_digits}", admin_order_payments_path(payment.order) %>
+            <% else %>
+              <%= link_to "Payment ##{payment.id}", admin_order_payments_path(payment.order) %>
+            <% end %>
+          </td>
           <td><%= number_to_currency payment.amount %></td>
         </tr>
       <% end %>
     </table>
+
   <% end %>
 </div>
 
 <div id='orders'>
   <h2><%= @report.orders.count %> Orders</h2>
   <% if @report.orders.present? %>
-    <table>
+    <a href='#' data-details='order_details'>Show details...</a>
+    <table class='details' id='order_details'>
       <tr>
         <th>ID</th>
         <th>Item Count</th>
@@ -110,7 +147,8 @@ This report includes items that were in shipments created on this date.
   <h2><%= @report.shipments.count %> Shipments</h2>
 
   <% if @report.shipments.present? %>
-    <table>
+    <a href='#' data-details='shipment_details'>Show details...</a>
+    <table class='details' id='shipment_details'>
       <tr>
         <th>Order</th>
         <th>Shipment</th>
@@ -135,7 +173,8 @@ This report includes items that were in shipments created on this date.
   Adjustments may be use in place of shipping charges, if its hard to get the cart to do what we want.
 
   <% if @report.adjustments.present? %>
-    <table>
+    <a href='#' data-details='adjustment_details'>Show details...</a>
+    <table class='details' id='adjustment_details'>
       <tr>
         <th>Order</th>
         <th>Adjustment</th>
