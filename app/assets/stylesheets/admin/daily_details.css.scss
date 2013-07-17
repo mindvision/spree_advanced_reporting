@@ -1,5 +1,10 @@
+h1 {
+  padding: 20px 0;
+}
+
 h2 {
   margin: 20px 0;
+  border-bottom: 2px solid #cee1f4;
 }
 
 #date_form {
@@ -8,6 +13,7 @@ h2 {
 
   form {
     margin: 20px;
+    margin-left: 40px;
 
     input {
       margin: 0 10px;
@@ -31,8 +37,24 @@ table {
   tr.total {
     font-weight: bold;
   }
+
 }
 
 .details {
   display: none;
+}
+
+a[data-details] {
+  float: right;
+  margin: -42px 0;
+}
+
+.count {
+  font-family: Courier;
+  text-align: center;
+}
+
+.amount {
+  font-family: Courier;
+  text-align: right;
 }

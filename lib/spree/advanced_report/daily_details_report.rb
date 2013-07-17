@@ -1,5 +1,5 @@
 class Spree::AdvancedReport::DailyDetailsReport < Spree::AdvancedReport::IncrementReport
-  attr_accessor :date, :shipments, :adjustments, :orders, :payments
+  attr_accessor :date, :products, :shipments, :tax_adjustments, :price_adjustments, :other_adjustments, :orders, :payments
 
   def name
     "Detailed Units Sold"
@@ -20,12 +20,9 @@ class Spree::AdvancedReport::DailyDetailsReport < Spree::AdvancedReport::Increme
     date = params[:date] ? Date.parse(params[:date]) : Date.today
 
     self.date = date
-    self.data = results[:products]
-    self.shipments = results[:shipments]
-    self.adjustments = results[:adjustments]
-    self.orders = results[:orders]
-    self.payments = results[:payments]
 
+    # Update the accessor values
+    results.each{|k,v| self.send("#{k}=", v)}
   end
 
   def details_for_date(date)
@@ -34,8 +31,16 @@ class Spree::AdvancedReport::DailyDetailsReport < Spree::AdvancedReport::Increme
 
     payments = Spree::Payment.joins(:order).where(conditions).where('spree_orders.completed_at is not null').includes(source: [], order: [:shipments, :adjustments])
     orders = payments.collect(&:order).uniq
+
     shipments = orders.collect(&:shipments).flatten
-    adjustments = orders.collect(&:adjustments).flatten.select{|a| a.source_type != 'Spree::Shipment'}
+
+    adjustment_ids = orders.collect(&:adjustments).flatten.collect(&:id)
+    tax_adjustments = Spree::Adjustment.tax.where(id: adjustment_ids)
+    price_adjustments = Spree::Adjustment.price.where(id: adjustment_ids)
+    other_adjustments = Spree::Adjustment.where(id: adjustment_ids) - tax_adjustments - price_adjustments - shipments.collect(&:adjustment)
+
+#    adjustments = orders.collect(&:adjustments).flatten.select{|a| a.source_type != 'Spree::Shipment'}
+
 
     line_items = orders.collect(&:line_items).flatten
 
@@ -46,7 +51,7 @@ class Spree::AdvancedReport::DailyDetailsReport < Spree::AdvancedReport::Increme
       memo
     end
 
-    {products: products, shipments: shipments, adjustments: adjustments, orders: orders, payments: payments}
+    {products: products, shipments: shipments, tax_adjustments: tax_adjustments, price_adjustments: price_adjustments, other_adjustments: other_adjustments, orders: orders, payments: payments}
   end
 
 

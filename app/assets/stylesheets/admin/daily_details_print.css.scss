@@ -13,6 +13,7 @@ body {
 
 h1, h2 {
   border-bottom: 2px solid black;
+  padding: inherit;
 }
 
 table {
@@ -30,7 +31,21 @@ table {
     background-color: transparent;
   }
 
-  th, th:first-child, td, td:first-child {
-    border: 1px solid black;
+  th, th:first-child {
+    border-bottom: 1px solid black;
+    border-top: 1px solid black;
   }
+
+  td, td:first-child {
+    border: none;
+  }
+
+  tr.totals td {
+    border-top: 2px solid black;
+  }
+
+}
+
+a {
+  text-decoration: none;
 }
