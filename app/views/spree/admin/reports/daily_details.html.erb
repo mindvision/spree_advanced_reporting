@@ -102,7 +102,7 @@
         <% amount = payments.reduce(0){|m,p| m += p.amount; m} %>
         <% payments_total += amount %>
         <tr>
-          <td><%= cc_type.humanize %></td>
+          <td><%= credit_card_humanizer(cc_type) %></td>
           <td class='count'><%= payments.count %></td>
           <td class='amount'><%= number_to_currency(amount) %></td>
         </tr>
@@ -127,7 +127,7 @@
           <td><%= link_to payment.order.number, admin_order_path(payment.order) %></td>
           <td>
             <% if payment.source.is_a?(Spree::CreditCard) %>
-              <%= link_to "#{payment.source.cc_type.humanize} #{payment.source.last_digits}", admin_order_payments_path(payment.order) %>
+              <%= link_to "#{credit_card_humanizer(credit_card_type(payment))} #{payment.source.last_digits}", admin_order_payments_path(payment.order) %>
             <% else %>
               <%= link_to "Payment ##{payment.id}", admin_order_payments_path(payment.order) %>
             <% end %>

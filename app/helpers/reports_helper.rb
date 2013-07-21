@@ -20,4 +20,8 @@ module ReportsHelper
     payment.source.cc_type
   end
 
+  def credit_card_humanizer(str)
+    str.present? ? str.humanize : '(unknown)'
+  end
+
 end
