@@ -1,7 +1,7 @@
 <% content_for :head do -%>
   <%= stylesheet_link_tag 'admin/daily_details', media: 'all' %>
   <%= stylesheet_link_tag 'admin/daily_details_print', media: 'print' %>
-
+  <%= javascript_include_tag 'admin/daily_details' %>
 <% end %>
 
 <% line_items = @report.products.keys.sort{|a,b| a.sku <=> b.sku} %>
