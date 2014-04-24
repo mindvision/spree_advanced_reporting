@@ -4,7 +4,7 @@ $(function() {
 		$(this).addClass('selected');
 		var id = 'div#' + $(this).attr('id') + '_data';
 		$('div.advanced_reporting_data').not($(id)).hide();
-		$(id).show(); 
+		$(id).show();
 	});
 	$('table.tablesorter').tablesorter();
 	$('table.tablesorter').bind("sortEnd", function() {
@@ -35,8 +35,8 @@ $(function() {
 		$('input#search_completed_at_lt').val(completed_at_lt);
 	}
 })
-	
-var update_report_dropdowns = function(value) {	
+
+var update_report_dropdowns = function(value) {
 	if(value.match(/\/count$/) || value.match(/\/top_products$/)) {
 		$('select#advanced_reporting_product_id,select#advanced_reporting_taxon_id').val('');
 		$('div#taxon_products').hide();

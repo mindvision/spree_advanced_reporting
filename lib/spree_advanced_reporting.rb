@@ -7,11 +7,11 @@ module Spree
     class Engine < Rails::Engine
       config.autoload_paths += %W(#{config.root}/lib)
       def self.activate
-        
+
         Dir.glob(File.join(File.dirname(__FILE__), "../config/locales/*.yml")).each do |c|
           I18n.load_path << File.expand_path(c)
         end
-        
+
         Dir.glob(File.join(File.dirname(__FILE__), "../app/**/*_decorator.rb")).each do |c|
           Rails.env.production? ? require(c) : load(c)
         end
@@ -20,7 +20,7 @@ module Spree
         # if Mime::Type.lookup_by_extension(:pdf) != 'application/pdf'
         #   Mime::Type.register('application/pdf', :pdf)
         # end
-        
+
         Ruport::Formatter::HTML.class_eval do
           # Renders individual rows for the table.
           def build_row(data = self.data)
@@ -40,8 +40,8 @@ module Spree
           def build_table_header
             output << "\t<table class=\"tablesorter\">\n"
             unless data.column_names.empty? || !options.show_table_headers
-              output << "\t\t<thead><tr>\n\t\t\t<th>" + 
-                data.column_names.join("</th>\n\t\t\t<th>") + 
+              output << "\t\t<thead><tr>\n\t\t\t<th>" +
+                data.column_names.join("</th>\n\t\t\t<th>") +
                 "</th>\n\t\t</tr></thead>\n"
             end
           end

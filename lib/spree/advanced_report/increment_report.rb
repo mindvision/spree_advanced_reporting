@@ -4,8 +4,8 @@ class Spree::AdvancedReport::IncrementReport < Spree::AdvancedReport
 
   def initialize(params)
     super(params)
-  
-    self.increments = INCREMENTS 
+
+    self.increments = INCREMENTS
     self.ruportdata = INCREMENTS.inject({}) { |h, inc| h[inc] = Table(%w[key display value]); h }
     self.data = INCREMENTS.inject({}) { |h, inc| h[inc] = {}; h }
 
@@ -35,7 +35,7 @@ class Spree::AdvancedReport::IncrementReport < Spree::AdvancedReport
   end
 
   def generate_ruport_data
-    self.all_data = Table(%w[increment key display value]) 
+    self.all_data = Table(%w[increment key display value])
     INCREMENTS.each do |inc|
       data[inc].each { |k,v| ruportdata[inc] << { "key" => k, "display" => v[:display], "value" => v[:value] } }
       ruportdata[inc].data.each do |p|
@@ -49,9 +49,9 @@ class Spree::AdvancedReport::IncrementReport < Spree::AdvancedReport
     end
     self.all_data.sort_rows_by!(["key"])
     self.all_data.remove_column("key")
-    self.all_data = Grouping(self.all_data, :by => "increment") 
+    self.all_data = Grouping(self.all_data, :by => "increment")
   end
-  
+
   def get_bucket(type, completed_at)
     if type == :weekly
       return completed_at.beginning_of_week.strftime("%Y-%m-%d")
@@ -73,6 +73,6 @@ class Spree::AdvancedReport::IncrementReport < Spree::AdvancedReport
   end
 
   def format_total
-    self.total 
+    self.total
   end
 end

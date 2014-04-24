@@ -1,5 +1,5 @@
 Spree::Admin::ReportsController.class_eval do
-  before_filter :add_own 
+  before_filter :add_own
   before_filter :basic_report_setup, :actions => [:daily_details, :profit, :revenue, :units, :top_products, :top_customers, :geo_revenue, :geo_units, :count]
 
   def add_own
@@ -14,7 +14,7 @@ Spree::Admin::ReportsController.class_eval do
     ADVANCED_REPORTS[x]= {name: I18n.t("adv_report."+x.to_s), :description => I18n.t("adv_report."+x.to_s)}
   end
 
-   
+
   def basic_report_setup
     @reports = ADVANCED_REPORTS
     @products = Spree::Product.all
