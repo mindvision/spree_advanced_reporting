@@ -1,32 +1,37 @@
-<% [:state, :country].each do |type| -%>
-    <div id="<%= type.to_s %>_data" <%= 'style=display:none;' if type != :state %> class="advanced_reporting_data">
-        <div id="<%= type.to_s %>_canvas" class="canvas"></div>
-        <%= raw @report.ruportdata[type].to_html %>
+<% content_for :page_title do %>
+  <%= Spree.t('adv_report.' + @report.name.downcase) %> &middot; <small><%= @report.description %></small>
+<% end %>
+
+<% content_for :page_actions do %>
+    <li><%= link_to_with_icon 'icon-arrow-left', Spree.t(:back_to_reports_list), spree.admin_reports_url, :class => 'button' %></li>
+<% end %>
+
+<% content_for :sidebar_title do %>
+  <% Spree.t(:report_details) %>
+<% end %>
+
+<% content_for :sidebar do %>
+  <nav class="menu">
+    <ul class="show_data">
+      <%= content_tag :li do %>
+        <%= raw @report.taxon_text %>
+      <% end %>
+      <%= content_tag :li do %>
+        <%= raw @report.product_text %>
+      <% end %>
+      <%= content_tag :li, 'state' do %>
+        <label>States</label><br />
+        <a href="<%= @report.download_url(request.fullpath, 'csv', "state") %>">CSV</a>
+      <% end %>
+      <%= content_tag :li, id: 'country' do %>
+        <label>Countries</label><br />
+        <a href="<%= @report.download_url(request.fullpath, 'csv', "country") %>">CSV</a>
+      <% end %>
     </div>
-<% end -%>
+  </nav>
+<% end %>
 
-<% content_for :table_filter do -%>
-    <div class="report_details">
-        <h1><%=t "adv_report." + @report.name.downcase %></h1>
-        <p><%= @report.description %></p>
-        <%= @report.taxon_text %>
-        <%= @report.product_text %>
-    </div>
-
-    <ul id="show_data">
-        <li class="selected" id="state">
-            <label>States</label><br />
-            <a href="<%= @report.download_url(request.fullpath, 'csv', "state") %>">CSV</a>
-        </li>
-        <li id="country">
-            <label>Countries</label><br />
-            <a href="<%= @report.download_url(request.fullpath, 'csv', "country") %>">CSV</a>
-        </li>
-    </ul>
-    <%= render :partial => 'spree/admin/reports/advanced_report_criteria', :locals => {} %>
-<% end -%>
-
-<% content_for :head do -%>
+<% content_for :head do %>
     <script type="text/javascript" src="http://www.google.com/jsapi"></script>
     <script type="text/javascript">
         google.load('visualization', '1', {'packages': ['geomap']});        
@@ -34,26 +39,36 @@
     <script type="text/javascript">
         google.setOnLoadCallback(drawMaps);
 
-function drawMaps() {
-<% [:state, :country].each do |type| -%>
-    var data_<%= type.to_s %> = new google.visualization.DataTable();
-data_<%= type.to_s %>.addRows(<%= @report.ruportdata[type].size %>);
-data_<%= type.to_s %>.addColumn('string', '<%= type.to_s.capitalize %>');
-data_<%= type.to_s %>.addColumn('number', '<%= @report.column %>');
-<% @report.ruportdata[type].each_with_index do |p, i| %>
-    data_<%= type.to_s %>.setValue(<%= i.to_s %>, 0, "<%= p.data[type.to_s.capitalize] %>");
-data_<%= type.to_s %>.setValue(<%= i.to_s %>, 1, <%= p.data[@report.column].to_s.gsub(/^\$/, '') %>);
-        <% end -%>
+        function drawMaps() {
+        <% [:state, :country].each do |type| %>
+            var data_<%= type.to_s %> = new google.visualization.DataTable();
+            data_<%= type.to_s %>.addRows(<%= @report.ruportdata[type].size %>);
+            data_<%= type.to_s %>.addColumn('string', '<%= type.to_s.capitalize %>');
+            data_<%= type.to_s %>.addColumn('number', '<%= @report.column %>');
+          <% @report.ruportdata[type].each_with_index do |p, i| %>
+            data_<%= type.to_s %>.setValue(<%= i.to_s %>, 0, "<%= p.data[type.to_s.capitalize] %>");
+            data_<%= type.to_s %>.setValue(<%= i.to_s %>, 1, <%= p.data[@report.column].to_s.gsub(/^\$/, '') %>);
+          <% end %>
 
-var options_<%= type.to_s %> = { 'width' : '800px', 'height' : '500px' };
-<% if type == :state %> 
-    options_<%= type.to_s %>['region'] = 'US';
-        <% end -%>
+          var options_<%= type.to_s %> = { 'width' : '800px', 'height' : '500px' };
+        <% if type == :state %>
+          options_<%= type.to_s %>['region'] = 'US';
+        <% end %>
 
-var <%= type.to_s %>_container = document.getElementById('<%= type.to_s %>_canvas');
-var <%= type.to_s %>_geomap = new google.visualization.GeoMap(<%= type.to_s %>_container);
-<%= type.to_s %>_geomap.draw(data_<%= type.to_s %>, options_<%= type.to_s %>);
-        <% end -%>
-};
+        var <%= type.to_s %>_container = document.getElementById('<%= type.to_s %>_canvas');
+        var <%= type.to_s %>_geomap = new google.visualization.GeoMap(<%= type.to_s %>_container);
+        <%= type.to_s %>_geomap.draw(data_<%= type.to_s %>, options_<%= type.to_s %>);
+      <% end %>
+      };
 </script>
-<% end -%>
+<% end %>
+
+<%= render :partial => 'spree/admin/reports/advanced_report_criteria', :locals => {} %>
+
+<% [:state, :country].each do |type| %>
+    <div id="<%= type.to_s %>_data" <%= 'style=display:none;' if type != :state %> class="advanced_reporting_data">
+        <div id="<%= type.to_s %>_canvas" class="canvas"></div>
+        <%= raw @report.ruportdata[type].to_html %>
+    </div>
+<% end %>
+

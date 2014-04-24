@@ -54,10 +54,10 @@ module Spree
       end
 
       if self.product
-        self.product_text = "Product: #{self.product.name}<br />"
+        self.product_text = "<label>Product:</label> #{self.product.name}"
       end
       if self.taxon
-        self.taxon_text = "Taxon: #{self.taxon.name}<br />"
+        self.taxon_text = "<label>Taxon:</label> #{self.taxon.name}"
       end
 
       # Above searchlogic date settings

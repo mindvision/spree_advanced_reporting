@@ -1,12 +1,30 @@
-<%= raw @report.ruportdata.to_html %>
-
-<% content_for :table_filter do %>
-    <div class="report_details">
-        <h1><%=t "adv_report." + @report.name.downcase.gsub(/ /,"_") %></h1>
-        <p><%= @report.description %></p>
-        <%= @report.taxon_text %>
-        <%= @report.product_text %>
-    </div>
-
-    <%= render :partial => 'spree/admin/reports/advanced_report_criteria', :locals => {} %>
+<% content_for :page_title do %>
+  <%= Spree.t 'adv_report.' + @report.name.downcase %> &middot; <small><%= @report.description %></small>
 <% end %>
+
+<% content_for :page_actions do %>
+    <li><%= link_to_with_icon 'icon-arrow-left', Spree.t(:back_to_reports_list), spree.admin_reports_url, :class => 'button' %></li>
+<% end %>
+
+<% if @report.taxon_text || @report.product_text %>
+  <% content_for :sidebar_title do %>
+    <% Spree.t(:report_details) %>
+  <% end %>
+
+  <% content_for :sidebar do %>
+    <nav class="menu">
+      <ul class="show_data">
+        <%= content_tag :li do %>
+          <%= raw @report.taxon_text %>
+        <% end %>
+        <%= content_tag :li do %>
+          <%= raw @report.product_text %>
+        <% end %>
+      </ul>
+    </nav>
+  <% end %>
+<% end %>
+
+<%= render :partial => 'spree/admin/reports/advanced_report_criteria', :locals => {} %>
+
+<%= raw @report.ruportdata.to_html %>

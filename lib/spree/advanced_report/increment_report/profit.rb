@@ -8,7 +8,7 @@ class Spree::AdvancedReport::IncrementReport::Profit < Spree::AdvancedReport::In
   end
 
   def description
-    "Total profit in orders, where profit is the sum of item quantity times item price minus item cost price"
+    "Total order profit is the sum of item quantity, times item price, minus item cost"
   end
 
   def initialize(params)

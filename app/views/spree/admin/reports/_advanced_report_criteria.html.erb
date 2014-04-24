@@ -1,19 +1,21 @@
+<% content_for :table_filter_title do %>
+  <%= Spree.t(:date_range) %>
+<% end %>
+
+<% content_for :table_filter do %>
 <div id="advanced_report_search">
   <%= form_for :search do |s| %>
-    <% if @stores -%>
+    <% if @stores %>
         Store:<br /><%= collection_select(:search, :store_id, @stores, :id, :name, { :include_blank => 'All' } ) %><br />
-        <br>
-
-    <% end -%>
+    <% end %>
 
     <div id="taxon_products">
-    <% if @taxons -%>
-        <%=t "taxons"%>: <%= collection_select(:advanced_reporting, :taxon_id, @taxons, :id, :name, { :include_blank => 'All' } ) %>
-    <% end -%>
-    <%=t :products%>: <%= collection_select(:advanced_reporting, :product_id, @products, :id, :name, { :include_blank => 'All' } ) %><br />
+    <% if @taxons %>
+        <%= t :taxons %>: <%= collection_select(:advanced_reporting, :taxon_id, @taxons, :id, :name, { :include_blank => 'All' } ) %>
+    <% end %>
+    <%= t :products %>: <%= collection_select(:advanced_reporting, :product_id, @products, :id, :name, { :include_blank => 'All' } ) %><br />
     </div>
 
-    <%= t("date_range") %>:
     <div class="date-range-filter field align-center">
         <%= label_tag nil, t(:start), :class => 'inline' %>
         <%= s.text_field :created_at_gt, :class => 'datepicker datepicker-from' %>
@@ -27,25 +29,26 @@
     </div>
 
     <div class="actions filter-actions">
-      <%= button t(:search), 'icon-search'  %>
+      <%= button Spree.t(:search), 'icon-search'  %>
     </div>
-  <% end -%>
+  <% end %>
 </div>
+<% end %>
 
-<% content_for :head do -%>
+<% content_for :head do %>
 <% #= javascript_include_tag 'admin/jquery.tablesorter.min.js', 'admin/advanced_reporting.js' %>
 <% #= stylesheet_link_tag 'admin/advanced_reporting' %>
 <script type="text/javascript">
 var completed_at_lt = "<%= (@report.unfiltered_params && @report.unfiltered_params[:completed_at_lt]) ? @report.unfiltered_params[:completed_at_lt] : '' %>";
 var completed_at_gt = "<%= (@report.unfiltered_params && @report.unfiltered_params[:completed_at_gt]) ? @report.unfiltered_params[:completed_at_gt] : '' %>";
 </script>
-<% end -%>
+<% end %>
 
-<% if params[:advanced_reporting] -%>
-  <% if params[:advanced_reporting][:product_id] && params[:advanced_reporting][:product_id] != '' -%>
+<% if params[:advanced_reporting] %>
+  <% if params[:advanced_reporting][:product_id] && params[:advanced_reporting][:product_id] != '' %>
   <input type="hidden" id="product_id" value="<%= params[:advanced_reporting][:product_id] %>" />
-  <% end -%>
-  <% if params[:advanced_reporting][:taxon_id] && params[:advanced_reporting][:taxon_id] != '' -%>
+  <% end %>
+  <% if params[:advanced_reporting][:taxon_id] && params[:advanced_reporting][:taxon_id] != '' %>
   <input type="hidden" id="taxon_id" value="<%= params[:advanced_reporting][:taxon_id] %>" />
-  <% end -%>
-<% end -%>
+  <% end %>
+<% end %>
