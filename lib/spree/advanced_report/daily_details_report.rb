@@ -59,7 +59,7 @@ class Spree::AdvancedReport::DailyDetailsReport < Spree::AdvancedReport::Increme
   # It may never be used again
 
   def items_shipped_from_an_order
-    # For each order, determine how many 
+    # For each order, determine how many
     items = {}
     orders.each do |o|
       shipped_variants = o.inventory_units.collect{|i| i.variant}

@@ -8,7 +8,7 @@ class Spree::AdvancedReport::IncrementReport::Profit < Spree::AdvancedReport::In
   end
 
   def description
-    "Total profit in orders, where profit is the sum of item quantity times item price minus item cost price"
+    "Total order profit is the sum of item quantity, times item price, minus item cost"
   end
 
   def initialize(params)
@@ -19,7 +19,7 @@ class Spree::AdvancedReport::IncrementReport::Profit < Spree::AdvancedReport::In
       INCREMENTS.each do |type|
         date[type] = get_bucket(type, order.completed_at)
         data[type][date[type]] ||= {
-          :value => 0, 
+          :value => 0,
           :display => get_display(type, order.completed_at),
         }
       end

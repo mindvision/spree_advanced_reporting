@@ -8,7 +8,7 @@ class Spree::AdvancedReport::IncrementReport::Revenue < Spree::AdvancedReport::I
   end
 
   def description
-    "Total order revenue, where revenue is the sum of order item prices, excluding shipping and tax"
+    "The sum of order item prices, excluding shipping and tax"
   end
 
   def initialize(params)
