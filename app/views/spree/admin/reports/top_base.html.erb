@@ -1,3 +1,4 @@
+<div class="reporting-gem">
 <% content_for :page_title do %>
   <%= Spree.t 'adv_report.' + @report.name.downcase %> &middot; <small><%= @report.description %></small>
 <% end %>
@@ -28,3 +29,4 @@
 <%= render :partial => 'spree/admin/reports/advanced_report_criteria', :locals => {} %>
 
 <%= raw @report.ruportdata.to_html %>
+</div>

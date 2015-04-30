@@ -1,3 +1,4 @@
+<div class="reporting-gem">
 <% content_for :table_filter_title do %>
   <%= Spree.t(:date_range) %>
 <% end %>
@@ -52,3 +53,4 @@ var completed_at_gt = "<%= (@report.unfiltered_params && @report.unfiltered_para
   <input type="hidden" id="taxon_id" value="<%= params[:advanced_reporting][:taxon_id] %>" />
   <% end %>
 <% end %>
+</div>
